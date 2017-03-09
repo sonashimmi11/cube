@@ -1,17 +1,18 @@
 
 #include <GL\glut.h>
+#include <math.h>
 // Global variables 
-GLfloat xRotated, yRotated, zRotated;
+GLfloat xRotated = 0, yRotated = 0, zRotated =0;
  GLfloat xscale, yscale, zscale;
- int mode=1; // 1- points, 2- wireframe, 3- shaded
+ int mode=3; // 1- points, 2- wireframe, 3- shaded
+ GLfloat offset =35;
+ GLfloat xposition = offset , yposition=0 ,zposition=0;
+ GLfloat theta = 0;
 void init(void)
 {
 glClearColor(1,1,1,0);
 xscale=1;
 yscale=1;zscale=1;
-//gluLookAt(camera[0], camera[1], camera[2], /* look from camera XYZ */ 
-         // 0, 0, 0,  /* look at the origin */ 
-        //  0, 1, 0); /* positive Y up vector */
 
  
 }
@@ -19,11 +20,19 @@ yscale=1;zscale=1;
 void DrawCube(void)
 {
 
+     glMatrixMode(GL_PROJECTION);
+    // clear the drawing buffer.
+	 
+	// gluLookAt(xposition, yposition, zposition, /* look from camera XYZ */ 
+       //  0, 0, 0,  /* look at the origin */ 
+    //     0, 1, 0); /* positive Y up vector */
+	
      glMatrixMode(GL_MODELVIEW);
     // clear the drawing buffer.
+	 
     glClear(GL_COLOR_BUFFER_BIT);   
-   glLoadIdentity();
-    glTranslatef(0.0,0.0,-10.5);
+   //glLoadIdentity();
+    glTranslatef(0.0,0.0,1.5);
 	//glTranslatef(1.0,2.0,-8.5);
     glRotatef(xRotated,1.0,0.0,0.0);
     // rotation about Y axis
@@ -92,7 +101,7 @@ void reshape(int x, int y)
     //Near clipping plane distance: 0.5
     //Far clipping plane distance: 20.0
      
-    gluPerspective(80.0,(GLdouble)x/(GLdouble)y,0.5,20.0);
+    gluPerspective(70.0,(GLdouble)x/(GLdouble)y,0.5,20.0);
     glMatrixMode(GL_MODELVIEW);
     glViewport(0,0,x,y);  //Use the whole window for rendering
 }
@@ -129,6 +138,11 @@ void processNormalKeys(unsigned char key, int x, int y) {
 		mode = 3;
 
 	}
+	else if (key== 'c'){
+		theta += 5;
+		xposition =offset  *cos(3.14/180*theta);
+		zposition=-offset *sin(3.14/180*theta);
+	}
 	glutPostRedisplay();
 }
 void mouseinput (int button, int state, int x, int y){
@@ -149,6 +163,9 @@ glutInit(&argc, argv);
 //we initizlilze the glut. functions
 glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
 glutInitWindowPosition(100, 100);
+glutCreateWindow(argv[0]);
+init();
+glutDisplayFunc(DrawCube);
 glutCreateWindow(argv[0]);
 init();
 glutDisplayFunc(DrawCube);
